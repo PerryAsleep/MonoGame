@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <DefineConstants>WINDOWS;XNADESIGNPROVIDED;STBSHARP_INTERNAL</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseWindowsForms>true</UseWindowsForms>
@@ -10,7 +9,6 @@
     <PackageId>MonoGame.Framework.WindowsDX</PackageId>
     <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="bin\**\*" />
     <Compile Remove="obj\**\*" />
@@ -18,12 +16,10 @@
     <Compile Remove="Properties\**\*" />
     <Compile Remove="Utilities\System.Numerics.Vectors\**\*" />
   </ItemGroup>
-
   <ItemGroup>
     <None Remove="Platform\**\*" />
     <None Remove="Utilities\System.Numerics.Vectors\**\*" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="Platform\Audio\Xact\WaveBank.Default.cs" />
     <Compile Include="Platform\GamePlatform.Desktop.cs" />
@@ -38,7 +34,6 @@
     <Compile Include="Platform\Input\MessageBox.Windows.cs" />
     <Compile Include="Platform\Input\Mouse.Windows.cs" />
     <Compile Include="Platform\Input\MouseCursor.Windows.cs" />
-
     <Compile Include="Platform\Media\MediaLibrary.Default.cs" />
     <Compile Include="Platform\Media\MediaManagerState.cs" />
     <Compile Include="Platform\Media\MediaPlayer.WMS.cs" />
@@ -55,22 +50,15 @@
     <Compile Include="Platform\Windows\WinFormsGameForm.cs" />
     <Compile Include="Platform\Windows\WinFormsGamePlatform.cs" />
     <Compile Include="Platform\Windows\WinFormsGameWindow.cs" />
-  </ItemGroup> 
-
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\ThirdParty\StbImageSharp\src\**\*.cs" LinkBase="Utilities\StbImageSharp" />
     <Compile Include="..\ThirdParty\StbImageWriteSharp\src\**\*.cs" LinkBase="Utilities\StbImageWriteSharp" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="MonoGame.Framework.WindowsDX.targets" PackagePath="build" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Version="4.0.1" Include="SharpDX" />
     <PackageReference Version="4.0.1" Include="SharpDX.Direct2D1" />
     <PackageReference Version="4.0.1" Include="SharpDX.Direct3D11" />
@@ -79,7 +67,6 @@
     <PackageReference Version="4.0.1" Include="SharpDX.XAudio2" />
     <PackageReference Version="4.0.1" Include="SharpDX.XInput" />
   </ItemGroup>
-
   <Import Project="Platform\DirectX.targets" />
   <Import Project="Platform\XAudio.targets" />
 </Project>
