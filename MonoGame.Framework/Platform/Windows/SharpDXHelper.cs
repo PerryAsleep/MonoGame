@@ -22,7 +22,12 @@ namespace Microsoft.Xna.Framework
 #if WINDOWS_UAP
                     effect = SharpDX.DXGI.SwapEffect.FlipSequential;
 #else
-                    effect = SharpDX.DXGI.SwapEffect.Discard;
+                    // Begin Fumen modification.
+                    // https://devblogs.microsoft.com/directx/dxgi-flip-model/
+                    // Switching to DXGI Flip model. This is the recommended model from Microsoft and
+                    // in practice this reduces spiky frame times.
+                    effect = SharpDX.DXGI.SwapEffect.FlipDiscard;
+                    // End Fumen modificaiton.
 #endif
                     break;
 
@@ -30,7 +35,12 @@ namespace Microsoft.Xna.Framework
 #if WINDOWS_UAP
                     effect = SharpDX.DXGI.SwapEffect.FlipSequential;
 #else
-                    effect = SharpDX.DXGI.SwapEffect.Sequential;
+                    // Begin Fumen modification.
+                    // https://devblogs.microsoft.com/directx/dxgi-flip-model/
+                    // Switching to DXGI Flip model. This is the recommended model from Microsoft and
+                    // in practice this reduces spiky frame times.
+                    effect = SharpDX.DXGI.SwapEffect.FlipSequential;
+                    // End Fumen modificaiton.
 #endif
                     break;
             }
