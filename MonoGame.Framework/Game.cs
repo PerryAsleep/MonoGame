@@ -285,6 +285,14 @@ namespace Microsoft.Xna.Framework
             set { _isFixedTimeStep = value; }
         }
 
+        // Begin Fumen modification.
+        // Profile Platform Present call.
+        public TimeSpan PreviousPresentTime
+        {
+            get => _previousPresentTime;
+        }
+        // End Fumen modification.
+
         /// <summary>
         /// Get a container holding service providers attached to this <see cref="Game"/>.
         /// </summary>
@@ -503,6 +511,10 @@ namespace Microsoft.Xna.Framework
         private readonly GameTime _gameTime = new GameTime();
         private Stopwatch _gameTimer;
         private long _previousTicks = 0;
+        // Begin Fumen modification.
+        // Profile Platform Present call.
+        private TimeSpan _previousPresentTime = TimeSpan.Zero;
+        // End Fumen modification.
         private int _updateFrameLag;
 #if WINDOWS_UAP
         private readonly object _locker = new object();
@@ -650,7 +662,12 @@ namespace Microsoft.Xna.Framework
         /// </summary>
         protected virtual void EndDraw()
         {
+            // Begin Fumen modification.
+            // Profile Platform Present call.
+            var startTicks = _gameTimer.Elapsed.Ticks;
             Platform.Present();
+            _previousPresentTime = TimeSpan.FromTicks(_gameTimer.Elapsed.Ticks - startTicks);
+            // End Fumen modification.
         }
 
         /// <summary>
