@@ -653,6 +653,13 @@ namespace Microsoft.Xna.Framework.Graphics
             PlatformPresent();
         }
 
+        // Begin Fumen modification.
+        public void WaitForPresentFinish()
+        {
+            PlatformWaitForPresentFinish();
+        }
+        // End Fumen modification.
+
         /*
         public void Present(Rectangle? sourceRectangle, Rectangle? destinationRectangle, IntPtr overrideWindowHandle)
         {

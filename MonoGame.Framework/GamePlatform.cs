@@ -244,6 +244,10 @@ namespace Microsoft.Xna.Framework
 
         public virtual void Present() { }
 
+        // Begin Fumen modification.
+        public virtual void WaitForPresentFinish() { }
+        // End Fumen modification.
+
         protected virtual void OnIsMouseVisibleChanged() {}
 
         /// <summary>

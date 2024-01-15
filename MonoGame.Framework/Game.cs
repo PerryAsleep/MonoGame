@@ -286,10 +286,15 @@ namespace Microsoft.Xna.Framework
         }
 
         // Begin Fumen modification.
-        // Profile Platform Present call.
+        // Profile Platform Present calls.
         public TimeSpan PreviousPresentTime
         {
             get => _previousPresentTime;
+        }
+
+        public TimeSpan PresentWaitTime
+        {
+            get => _presentWaitTime;
         }
         // End Fumen modification.
 
@@ -512,8 +517,9 @@ namespace Microsoft.Xna.Framework
         private Stopwatch _gameTimer;
         private long _previousTicks = 0;
         // Begin Fumen modification.
-        // Profile Platform Present call.
+        // Profile Platform Present calls.
         private TimeSpan _previousPresentTime = TimeSpan.Zero;
+        private TimeSpan _presentWaitTime = TimeSpan.Zero;
         // End Fumen modification.
         private int _updateFrameLag;
 #if WINDOWS_UAP
@@ -556,6 +562,12 @@ namespace Microsoft.Xna.Framework
             var currentTicks = _gameTimer.Elapsed.Ticks;
             _accumulatedElapsedTime += TimeSpan.FromTicks(currentTicks - _previousTicks);
             _previousTicks = currentTicks;
+
+            // Begin Fumen modification.
+            // Waiting for the complete Present before updates as per Microsoft's DirectX latency Sample.
+            // https://github.dev/microsoftarchive/msdn-code-gallery-microsoft/tree/master/Official%20Windows%20Platform%20Sample/DirectX%20latency%20sample
+            PlatformWaitForPresentFinish();
+            // End Fumen modification.
 
             if (IsFixedTimeStep && _accumulatedElapsedTime < TargetElapsedTime)
             {
@@ -669,6 +681,19 @@ namespace Microsoft.Xna.Framework
             _previousPresentTime = TimeSpan.FromTicks(_gameTimer.Elapsed.Ticks - startTicks);
             // End Fumen modification.
         }
+
+        // Begin Fumen modification.
+        /// <summary>
+        /// Called before <see cref="Update"/>. Allows the platform a time to
+        /// wait on Present operations when V sync is enabled and plaform waits on Present.
+        /// </summary>
+        protected virtual void PlatformWaitForPresentFinish()
+        {
+            var startTicks = _gameTimer.Elapsed.Ticks;
+            Platform.WaitForPresentFinish();
+            _presentWaitTime = TimeSpan.FromTicks(_gameTimer.Elapsed.Ticks - startTicks);
+        }
+        // End Fumen modification.
 
         /// <summary>
         /// Called after <see cref="Initialize"/>, but before the first call to <see cref="Update"/>.

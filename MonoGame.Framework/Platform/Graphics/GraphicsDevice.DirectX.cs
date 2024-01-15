@@ -12,6 +12,9 @@ using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.Mathematics.Interop;
 using SharpDX.DXGI;
+// Begin Fumen modification.
+using System.Runtime.InteropServices;
+// End Fumen modification.
 
 #if WINDOWS_UAP
 using Windows.UI.Xaml.Controls;
@@ -57,7 +60,9 @@ namespace Microsoft.Xna.Framework.Graphics
 #if WINDOWS
 
         SwapChain _swapChain;
-
+        // Begin Fumen modification.
+        IntPtr _frameLatencyWaitableObject;
+        // End Fumen modification.
 #endif
 
         // The active render targets.
@@ -759,7 +764,9 @@ namespace Microsoft.Xna.Framework.Graphics
                                         PresentationParameters.BackBufferWidth,
                                         PresentationParameters.BackBufferHeight,
                                         format,
-                                        SwapChainFlags.AllowModeSwitch);
+                                        // Begin Fumen Modification.
+                                        SwapChainFlags.AllowModeSwitch | SwapChainFlags.FrameLatencyWaitAbleObject);
+                                        // End Fumen modification.
             }
 
             // Otherwise, create a new swap chain.
@@ -793,10 +800,14 @@ namespace Microsoft.Xna.Framework.Graphics
                     OutputHandle = PresentationParameters.DeviceWindowHandle,
                     SampleDescription = multisampleDesc,
                     Usage = SharpDX.DXGI.Usage.RenderTargetOutput,
-                    BufferCount = 2,
+                    // Begin Fumen modification.
+                    BufferCount = 3,
+                    // End Fumen modification.
                     SwapEffect = SharpDXHelper.ToSwapEffect(PresentationParameters.PresentationInterval),
                     IsWindowed = true,
-                    Flags = SwapChainFlags.AllowModeSwitch
+                    // Begin Fumen modification.
+                    Flags = SwapChainFlags.AllowModeSwitch | SwapChainFlags.FrameLatencyWaitAbleObject
+                    // End Fumen modification.
                 };
 
                 // Once the desired swap chain description is configured, it must be created on the same adapter as our D3D Device
@@ -810,14 +821,27 @@ namespace Microsoft.Xna.Framework.Graphics
                     _swapChain = new SwapChain(dxgiFactory, dxgiDevice, desc);
                     RefreshAdapter();
                     dxgiFactory.MakeWindowAssociation(PresentationParameters.DeviceWindowHandle, WindowAssociationFlags.IgnoreAll);
+
+                    // Begin Fumen modification.
+                    // It many cases it is more important to not drop frames than it is to reduce latency.
+                    // Ideally this and the FrameLatencyWaitAbleObject control should be parameterized.
                     // To reduce latency, ensure that DXGI does not queue more than one frame at a time.
                     // Docs: https://msdn.microsoft.com/en-us/library/windows/desktop/ff471334(v=vs.85).aspx
-                    dxgiDevice.MaximumFrameLatency = 1;
+                    dxgiDevice.MaximumFrameLatency = 2;
+                    // End Fumen modification.
                 }
                 // Preserve full screen state, after swap chain is re-created 
                 if (PresentationParameters.HardwareModeSwitch
                     && wasFullScreen)
                     SetHardwareFullscreen();
+
+                // Begin Fumen modification.
+                using (var swapChain2 = _swapChain.QueryInterface<SwapChain2>())
+                {
+                    swapChain2.MaximumFrameLatency = 2;
+                    _frameLatencyWaitableObject = swapChain2.FrameLatencyWaitableObject;
+                }
+                // End Fumen modification.
             }
 
             // Obtain the backbuffer for this window which will be the final 3D rendertarget.
@@ -1658,5 +1682,18 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             return new Rectangle(x, y, width, height);
         }
+
+        // Begin Fumen modification.
+        [DllImport("kernel32.dll")]
+        private static extern uint WaitForSingleObjectEx(IntPtr hHandle, uint dwMilliseconds, bool bAlertable);
+
+        public void PlatformWaitForPresentFinish()
+        {
+            if (_frameLatencyWaitableObject != IntPtr.Zero)
+            {
+                WaitForSingleObjectEx(_frameLatencyWaitableObject, 1000, true);
+            }
+        }
+        // End Fumen modification.
     }
 }

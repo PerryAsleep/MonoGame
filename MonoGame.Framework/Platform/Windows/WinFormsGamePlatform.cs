@@ -118,7 +118,16 @@ namespace MonoGame.Framework
             if ( device != null )
                 device.Present();
         }
-		
+
+        // Begin Fumen modification.
+        public override void WaitForPresentFinish()
+        {
+            var device = Game.GraphicsDevice;
+            if (device != null)
+                device.WaitForPresentFinish();
+        }
+        // End Fumen modification.
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
