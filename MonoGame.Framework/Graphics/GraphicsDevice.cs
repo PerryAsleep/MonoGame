@@ -789,33 +789,38 @@ namespace Microsoft.Xna.Framework.Graphics
             }
         }
 
-		public void SetRenderTarget(RenderTarget2D renderTarget)
+		public void SetRenderTarget(RenderTarget2D renderTarget, bool force = false)
 		{
 			if (renderTarget == null)
 		    {
-                SetRenderTargets(null);
+                SetRenderTargets(force, null);
 		    }
 			else
 			{
 				_tempRenderTargetBinding[0] = new RenderTargetBinding(renderTarget);
-				SetRenderTargets(_tempRenderTargetBinding);
+				SetRenderTargets(force, _tempRenderTargetBinding);
 			}
 		}
 
-        public void SetRenderTarget(RenderTargetCube renderTarget, CubeMapFace cubeMapFace)
+        public void SetRenderTarget(RenderTargetCube renderTarget, CubeMapFace cubeMapFace, bool force = false)
         {
             if (renderTarget == null)
             {
-                SetRenderTargets(null);
+                SetRenderTargets(force, null);
             }
             else
             {
                 _tempRenderTargetBinding[0] = new RenderTargetBinding(renderTarget, cubeMapFace);
-                SetRenderTargets(_tempRenderTargetBinding);
+                SetRenderTargets(force, _tempRenderTargetBinding);
             }
         }
 
-		public void SetRenderTargets(params RenderTargetBinding[] renderTargets)
+        public void SetRenderTargets(params RenderTargetBinding[] renderTargets)
+        {
+            SetRenderTargets(false, renderTargets);
+        }
+
+        private void SetRenderTargets(bool force, params RenderTargetBinding[] renderTargets)
 		{
             // Avoid having to check for null and zero length.
             var renderTargetCount = 0;
@@ -829,7 +834,7 @@ namespace Microsoft.Xna.Framework.Graphics
             }
 
             // Try to early out if the current and new bindings are equal.
-            if (_currentRenderTargetCount == renderTargetCount)
+            if (!force && _currentRenderTargetCount == renderTargetCount)
             {
                 var isEqual = true;
                 for (var i = 0; i < _currentRenderTargetCount; i++)
