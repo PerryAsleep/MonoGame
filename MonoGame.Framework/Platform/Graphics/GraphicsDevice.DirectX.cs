@@ -629,12 +629,34 @@ namespace Microsoft.Xna.Framework.Graphics
 
         internal void SetHardwareFullscreen()
         {
-            _swapChain.SetFullscreenState(PresentationParameters.IsFullScreen && PresentationParameters.HardwareModeSwitch, null);
+            // Begin Fumen Modification.
+            //_swapChain.SetFullscreenState(PresentationParameters.IsFullScreen && PresentationParameters.HardwareModeSwitch, null);
+            try
+            {
+                _swapChain.SetFullscreenState(PresentationParameters.IsFullScreen && PresentationParameters.HardwareModeSwitch,
+                    null);
+            }
+            catch (SharpDXException)
+            {
+                // Ignored.
+                // TODO: Determine why this throws an exception when called after un-minimizing.
+            }
+            // End Fumen Modification.
         }
 
         internal void ClearHardwareFullscreen()
         {
-            _swapChain.SetFullscreenState(false, null);
+            // Begin Fumen Modification.
+            //_swapChain.SetFullscreenState(false, null);
+            try
+            {
+                _swapChain.SetFullscreenState(false, null);
+            }
+            catch (SharpDXException)
+            {
+                // Ignored.
+            }
+            // End Fumen Modification.
         }
 
         internal void ResizeTargets()
