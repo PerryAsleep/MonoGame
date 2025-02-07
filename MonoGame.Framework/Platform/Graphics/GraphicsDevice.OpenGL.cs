@@ -1323,5 +1323,11 @@ namespace Microsoft.Xna.Framework.Graphics
             height = mode.Height;
         }
 #endif
+
+        // Begin Fumen modification.
+        public void PlatformWaitForPresentFinish()
+        {
+        }
+        // End Fumen modification.
     }
 }
