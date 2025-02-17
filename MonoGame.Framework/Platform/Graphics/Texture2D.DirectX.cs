@@ -53,7 +53,9 @@ namespace Microsoft.Xna.Framework.Graphics
             }
 
             var elementSizeInByte = ReflectionHelpers.SizeOf<T>.Get();
-            var dataHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            // Begin Fumen modification
+            var dataHandle = PinnedData.IsAllocated ? PinnedData : GCHandle.Alloc(data, GCHandleType.Pinned);
+            // End Fumen modification
             // Use try..finally to make sure dataHandle is freed in case of an error
             try
             {
@@ -75,14 +77,19 @@ namespace Microsoft.Xna.Framework.Graphics
             }
             finally
             {
-                dataHandle.Free();
+                // Begin Fumen modification
+                if (!PinnedData.IsAllocated)
+                    dataHandle.Free();
+                // End Fumen modification
             }
         }
 
         private void PlatformSetData<T>(int level, int arraySlice, Rectangle rect, T[] data, int startIndex, int elementCount) where T : struct
         {
             var elementSizeInByte = ReflectionHelpers.SizeOf<T>.Get();
-            var dataHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            // Begin Fumen modification
+            var dataHandle = PinnedData.IsAllocated ? PinnedData : GCHandle.Alloc(data, GCHandleType.Pinned);
+            // End Fumen modification
             // Use try..finally to make sure dataHandle is freed in case of an error
             try
             {
@@ -105,7 +112,10 @@ namespace Microsoft.Xna.Framework.Graphics
             }
             finally
             {
-                dataHandle.Free();
+                // Begin Fumen modification
+                if (!PinnedData.IsAllocated)
+                    dataHandle.Free();
+                // End Fumen modification
             }
         }
 
@@ -197,15 +207,15 @@ namespace Microsoft.Xna.Framework.Graphics
             }
         }
 
-        protected override void Dispose(bool disposing)
+        // Begin Fumen modification
+        private void PlatformDispose(bool disposing)
         {
             if (disposing)
             {
                 SharpDX.Utilities.Dispose(ref _cachedStagingTexture);
             }
-
-            base.Dispose(disposing);
         }
+        // End Fumen modification
 
         private int CalculateSubresourceIndex(int arraySlice, int level)
         {

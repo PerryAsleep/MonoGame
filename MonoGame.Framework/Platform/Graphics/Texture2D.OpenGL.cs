@@ -83,6 +83,13 @@ namespace Microsoft.Xna.Framework.Graphics
             });
         }
 
+        // Begin Fumen modification
+        private void PlatformDispose(bool disposing)
+        {
+
+        }
+        // End Fumen modification
+
         private void PlatformSetDataBody<T>(int level, T[] data, int startIndex, int elementCount)
             where T : struct
         {
@@ -90,7 +97,9 @@ namespace Microsoft.Xna.Framework.Graphics
             GetSizeForLevel(Width, Height, level, out w, out h);
 
             var elementSizeInByte = ReflectionHelpers.SizeOf<T>.Get();
-            var dataHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            // Begin Fumen modification
+            GCHandle dataHandle = PinnedData.IsAllocated ? PinnedData : GCHandle.Alloc(data, GCHandleType.Pinned);
+            // End Fumen modification
             // Use try..finally to make sure dataHandle is freed in case of an error
             try
             {
@@ -106,8 +115,8 @@ namespace Microsoft.Xna.Framework.Graphics
                 }
 
                 GenerateGLTextureIfRequired();
-                GL.PixelStore(PixelStoreParameter.UnpackAlignment, Math.Min(_format.GetSize(), 8));
 
+                GL.PixelStore(PixelStoreParameter.UnpackAlignment, Math.Min(_format.GetSize(), 8));
                 if (glFormat == GLPixelFormat.CompressedTextureFormats)
                 {
                     GL.CompressedTexImage2D(
@@ -121,10 +130,15 @@ namespace Microsoft.Xna.Framework.Graphics
                 GraphicsExtensions.CheckGLError();
 
 #if !ANDROID
-                // Required to make sure that any texture uploads on a thread are completed
-                // before the main thread tries to use the texture.
-                GL.Finish();
-                GraphicsExtensions.CheckGLError();
+                // Begin Fumen modification
+                if (!DoNotSynchronizeSetDataCallsWithGPU)
+                {
+                    // Required to make sure that any texture uploads on a thread are completed
+                    // before the main thread tries to use the texture.
+                    GL.Finish();
+                    GraphicsExtensions.CheckGLError();
+                }
+                // End Fumen modification
 #endif
                 // Restore the bound texture.
                 if (prevTexture != glTexture)
@@ -135,7 +149,10 @@ namespace Microsoft.Xna.Framework.Graphics
             }
             finally
             {
-                dataHandle.Free();
+                // Begin Fumen modification
+                if (!PinnedData.IsAllocated)
+                    dataHandle.Free();
+                // End Fumen modification
             }
         }
 
@@ -143,7 +160,9 @@ namespace Microsoft.Xna.Framework.Graphics
             where T : struct
         {
             var elementSizeInByte = ReflectionHelpers.SizeOf<T>.Get();
-            var dataHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            // Begin Fumen modification
+            GCHandle dataHandle = PinnedData.IsAllocated ? PinnedData : GCHandle.Alloc(data, GCHandleType.Pinned);
+            // End Fumen modification
             // Use try..finally to make sure dataHandle is freed in case of an error
             try
             {
@@ -176,10 +195,15 @@ namespace Microsoft.Xna.Framework.Graphics
                 GraphicsExtensions.CheckGLError();
 
 #if !ANDROID
-                // Required to make sure that any texture uploads on a thread are completed
-                // before the main thread tries to use the texture.
-                GL.Finish();
-                GraphicsExtensions.CheckGLError();
+                // Begin Fumen modification
+                if (!DoNotSynchronizeSetDataCallsWithGPU)
+                {
+                    // Required to make sure that any texture uploads on a thread are completed
+                    // before the main thread tries to use the texture.
+                    GL.Finish();
+                    GraphicsExtensions.CheckGLError();
+                }
+                // End Fumen modification
 #endif
                 // Restore the bound texture.
                 if (prevTexture != glTexture)
@@ -190,7 +214,10 @@ namespace Microsoft.Xna.Framework.Graphics
             }
             finally
             {
-                dataHandle.Free();
+                // Begin Fumen modification
+                if (!PinnedData.IsAllocated)
+                    dataHandle.Free();
+                // End Fumen modification
             }
         }
 

@@ -19,12 +19,29 @@ namespace Microsoft.Xna.Framework.Graphics
             SwapChainRenderTarget,
         }
 
-		internal int width;
+        // Begin Fumen modification
+        private bool disposed;
+        // End Fumen modification
+
+        internal int width;
 		internal int height;
         internal int ArraySize;
                 
         internal float TexelWidth { get; private set; }
         internal float TexelHeight { get; private set; }
+
+        // Begin Fumen modification
+        public bool DoNotSynchronizeSetDataCallsWithGPU { get; set; }
+
+        internal GCHandle PinnedData;
+
+        public void PinData<T>(T[] data)
+        {
+            if (PinnedData.IsAllocated)
+                PinnedData.Free();
+            PinnedData = GCHandle.Alloc(data, GCHandleType.Pinned);
+        }
+        // End Fumen modification
 
         /// <summary>
         /// Gets the dimensions of the texture
@@ -36,6 +53,20 @@ namespace Microsoft.Xna.Framework.Graphics
 				return new Rectangle(0, 0, this.width, this.height);
             }
         }
+
+        // Begin Fumen modification
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                PlatformDispose(disposing);
+                if (PinnedData.IsAllocated)
+                    PinnedData.Free();
+                disposed = true;
+            }
+            base.Dispose(disposing);
+        }
+        // End Fumen modification
 
         /// <summary>
         /// Creates a new texture of the given size
@@ -155,6 +186,11 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <param name="elementCount"></param>
         public void SetData<T>(int level, int arraySlice, Rectangle? rect, T[] data, int startIndex, int elementCount) where T : struct
         {
+            // Begin Fumen modification
+            // When using explicitly pinned data we do not support setting individual layers.
+            if (PinnedData.IsAllocated)
+                throw new Exception("When using explicitly pinned data setting data on individual layers is not supported.");
+            // End Fumen modification
             Rectangle checkedRect;
             ValidateParams(level, arraySlice, rect, data, startIndex, elementCount, out checkedRect);
             PlatformSetData(level, arraySlice, checkedRect, data, startIndex, elementCount);
@@ -171,6 +207,11 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <param name="elementCount"></param>
         public void SetData<T>(int level, Rectangle? rect, T[] data, int startIndex, int elementCount) where T : struct 
         {
+            // Begin Fumen modification
+            // When using explicitly pinned data we do not support setting individual layers.
+            if (PinnedData.IsAllocated)
+                throw new Exception("When using explicitly pinned data setting data on individual layers is not supported.");
+            // End Fumen modification
             Rectangle checkedRect;
             ValidateParams(level, 0, rect, data, startIndex, elementCount, out checkedRect);
             if (rect.HasValue)
@@ -188,6 +229,11 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <param name="elementCount"></param>
 		public void SetData<T>(T[] data, int startIndex, int elementCount) where T : struct
         {
+            // Begin Fumen modification
+            // When using explicitly pinned data we do not support setting sub-areas.
+            if (PinnedData.IsAllocated)
+                throw new Exception("When using explicitly pinned data setting data on sub-areas is not supported.");
+            // End Fumen modification
             Rectangle checkedRect;
             ValidateParams(0, 0, null, data, startIndex, elementCount, out checkedRect);
             PlatformSetData(0, data, startIndex, elementCount);
@@ -200,6 +246,16 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <param name="data"></param>
 		public void SetData<T>(T[] data) where T : struct
 		{
+            // Begin Fumen modification
+            // When using explicitly pinned data the passed in data must be the pinned data
+            if (PinnedData.IsAllocated)
+            {
+                if (PinnedData.Target != data)
+                {
+                    throw new ArgumentException("When using explicitly pinned data the data provided in SetData must be the pinned data.", "data");
+                }
+            }
+            // End Fumen modification
             Rectangle checkedRect;
             ValidateParams(0, 0, null, data, 0, data.Length, out checkedRect);
             PlatformSetData(0, data, 0, data.Length);
