@@ -313,6 +313,15 @@ internal static class Sdl
     public delegate int d_sdl_sethint(string name, string value);
     public static d_sdl_sethint SetHint = FuncLoader.LoadFunction<d_sdl_sethint>(NativeLibrary, "SDL_SetHint");
 
+    // Begin Fumen Modification
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void d_sdl_maximizewindow(IntPtr window);
+    public static d_sdl_maximizewindow MaximizeWindow = FuncLoader.LoadFunction<d_sdl_maximizewindow>(NativeLibrary, "SDL_MaximizeWindow");
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void d_sdl_restorewindow(IntPtr window);
+    public static d_sdl_restorewindow RestoreWindow = FuncLoader.LoadFunction<d_sdl_restorewindow>(NativeLibrary, "SDL_RestoreWindow");
+    // End Fumen Modification
+
     public static class Window
     {
         public const int PosUndefined = 0x1FFF0000;
@@ -501,6 +510,17 @@ internal static class Sdl
         {
             GetError(SDL_GetDisplayBounds(displayIndex, out rect));
         }
+
+        // Begin Fumen Modification
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int d_sdl_getdisplayusablebounds(int displayIndex, out Rectangle rect);
+        public static d_sdl_getdisplayusablebounds SDL_GetDisplayUsableBounds = FuncLoader.LoadFunction<d_sdl_getdisplayusablebounds>(NativeLibrary, "SDL_GetDisplayUsableBounds");
+
+        public static void GetUsableBounds(int displayIndex, out Rectangle rect)
+        {
+            GetError(SDL_GetDisplayUsableBounds(displayIndex, out rect));
+        }
+        // End Fumen Modification
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int d_sdl_getcurrentdisplaymode(int displayIndex, out Mode mode);

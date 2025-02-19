@@ -370,7 +370,12 @@ namespace MonoGame.Framework
         internal void Initialize(PresentationParameters pp)
         {
             ChangeClientSize(new Size(pp.BackBufferWidth, pp.BackBufferHeight));
-
+            // Begin Fumen Modification
+            if (pp.IsMaximized)
+            {
+                Form.WindowState = FormWindowState.Maximized;
+            }
+            // End Fumen Modification
             if (pp.IsFullScreen)
             {
                 EnterFullScreen(pp);
@@ -698,6 +703,24 @@ namespace MonoGame.Framework
 
             _switchingFullScreen = false;
         }
+
+        // Begin Fumen Modification
+        public override void SetResolution(int w, int h)
+        {
+            Form.WindowState = FormWindowState.Normal;
+            Form.ClientSize = new Size(w, h);
+        }
+
+        public override bool IsMaximized()
+        {
+            return Form.WindowState == FormWindowState.Maximized;
+        }
+
+        public override void Maximize()
+        {
+            Form.WindowState = FormWindowState.Maximized;
+        }
+        // End Fumen Modification
     }
 }
 

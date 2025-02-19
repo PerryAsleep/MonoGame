@@ -49,7 +49,10 @@ namespace Microsoft.Xna.Framework
                 Sdl.GL.SetAttribute(Sdl.GL.Attribute.MultiSampleSamples, presentationParameters.MultiSampleCount);
             }
 
-            ((SdlGameWindow)SdlGameWindow.Instance).CreateWindow();
+            // Begin Fumen Modification
+            //((SdlGameWindow)SdlGameWindow.Instance).CreateWindow();
+            ((SdlGameWindow)SdlGameWindow.Instance).CreateWindow(presentationParameters);
+            // End Fumen Modification
         }
     }
 }

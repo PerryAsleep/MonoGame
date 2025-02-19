@@ -263,6 +263,12 @@ namespace Microsoft.Xna.Framework
 	    /// <param name="title">The new title of the window.</param>
 		protected abstract void SetTitle (string title);
 
+        // Begin Fumen Modification
+        public abstract void SetResolution(int x, int y);
+        public abstract bool IsMaximized();
+        public abstract void Maximize();
+        // End Fumen Modification
+
 #if DIRECTX && WINDOWS
         public static GameWindow Create(Game game, int width, int height)
         {

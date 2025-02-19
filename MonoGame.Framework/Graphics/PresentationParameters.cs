@@ -33,6 +33,9 @@ namespace Microsoft.Xna.Framework.Graphics
         private int multiSampleCount;
         private bool disposed;
         private bool isFullScreen;
+        // Begin Fumen Modification
+        private bool isMaximized;
+        // End Fumen Modification
         private bool hardwareModeSwitch = true;
 
         #endregion Private Fields
@@ -127,7 +130,24 @@ namespace Microsoft.Xna.Framework.Graphics
 
 			}
         }
-		
+
+        // Begin Fumen Modification
+        /// <summary>
+        /// Get or set a value indicating if we are maximized.
+        /// </summary>
+        public bool IsMaximized
+        {
+            get
+            {
+                return isMaximized;
+            }
+            set
+            {
+                isMaximized = value;
+            }
+        }
+        // End Fumen Modification
+
         /// <summary>
         /// If <code>true</code> the <see cref="GraphicsDevice"/> will do a mode switch
         /// when going to full screen mode. If <code>false</code> it will instead do a
@@ -206,6 +226,9 @@ namespace Microsoft.Xna.Framework.Graphics
 #else
             // isFullScreen = false;
 #endif
+            // Begin Fumen Modification
+            isMaximized = false;
+            // End Fumen Modification
             depthStencilFormat = DepthFormat.None;
             multiSampleCount = 0;
             PresentationInterval = PresentInterval.Default;
@@ -225,6 +248,9 @@ namespace Microsoft.Xna.Framework.Graphics
             clone.deviceWindowHandle = this.deviceWindowHandle;
             clone.depthStencilFormat = this.depthStencilFormat;
             clone.IsFullScreen = this.IsFullScreen;
+            // Begin Fumen Modification
+            clone.IsMaximized = this.IsMaximized;
+            // End Fumen Modification
             clone.HardwareModeSwitch = this.HardwareModeSwitch;
             clone.multiSampleCount = this.multiSampleCount;
             clone.PresentationInterval = this.PresentationInterval;

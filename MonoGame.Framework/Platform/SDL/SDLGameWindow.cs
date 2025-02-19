@@ -134,13 +134,21 @@ namespace Microsoft.Xna.Framework
                 Sdl.Window.State.Hidden | Sdl.Window.State.FullscreenDesktop);
         }
 
-        internal void CreateWindow()
+        // Begin Fumen Modification
+        //internal void CreateWindow()
+        internal void CreateWindow(PresentationParameters presentationParameters)
+        // End Fumen Modification
         {
             var initflags =
                 Sdl.Window.State.OpenGL |
                 Sdl.Window.State.Hidden |
                 Sdl.Window.State.InputFocus |
                 Sdl.Window.State.MouseFocus;
+
+            // Begin Fumen Modification
+            if (presentationParameters.IsMaximized)
+                initflags |= Sdl.Window.State.Maximized;
+            // End Fumen Modification
 
             if (_handle != IntPtr.Zero)
                 Sdl.Window.Destroy(_handle);
@@ -155,8 +163,12 @@ namespace Microsoft.Xna.Framework
                 winy |= GetMouseDisplay();
             }
 
-            _width = GraphicsDeviceManager.DefaultBackBufferWidth;
-            _height = GraphicsDeviceManager.DefaultBackBufferHeight;
+            // Begin Fumen Modification
+            //_width = GraphicsDeviceManager.DefaultBackBufferWidth;
+            //_height = GraphicsDeviceManager.DefaultBackBufferHeight;
+            _width = presentationParameters.BackBufferWidth;
+            _height = presentationParameters.BackBufferHeight;
+            // End Fumen Modification
 
             _handle = Sdl.Window.Create(
                 AssemblyHelper.GetDefaultWindowTitle(),
@@ -292,17 +304,37 @@ namespace Microsoft.Xna.Framework
 
         public void ClientResize(int width, int height)
         {
+            // Begin Fumen Modification
+            // When creating an SDL window that starts maximized it does not consider the taskbar area.
+            // It will use bounds larger than the available screen real estate. We need to clamp the
+            // dimensions to the usable bounds to correct this.
+            if (IsMaximized())
+            {
+                var displayIndex = Sdl.Window.GetDisplayIndex(Handle);
+                Sdl.Display.GetUsableBounds(displayIndex, out var bounds);
+                if (width > bounds.Width)
+                    width = bounds.Width;
+                if (height > bounds.Height)
+                    height = bounds.Height;
+            }
+            // End Fumen Modification
+
             // SDL reports many resize events even if the Size didn't change.
             // Only call the code below if it actually changed.
             if (_game.GraphicsDevice.PresentationParameters.BackBufferWidth == width &&
                 _game.GraphicsDevice.PresentationParameters.BackBufferHeight == height) {
                 return;
             }
+
             _game.GraphicsDevice.PresentationParameters.BackBufferWidth = width;
             _game.GraphicsDevice.PresentationParameters.BackBufferHeight = height;
             _game.GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
 
-            Sdl.Window.GetSize(Handle, out _width, out _height);
+            // Begin Fumen Modification
+            //Sdl.Window.GetSize(Handle, out _width, out _height);
+            _width = width;
+            _height = height;
+            // End Fumen Modification
 
             OnClientSizeChanged();
         }
@@ -336,5 +368,28 @@ namespace Microsoft.Xna.Framework
 
             _disposed = true;
         }
+
+        // Begin Fumen Modification
+        public override void SetResolution(int w, int h)
+        {
+            if (IsMaximized())
+                RestoreWindow(Handle);
+
+            _game.graphicsDeviceManager.PreferredBackBufferWidth = w;
+            _game.graphicsDeviceManager.PreferredBackBufferHeight = h;
+            _game.graphicsDeviceManager.ApplyChanges();
+        }
+
+        public override bool IsMaximized()
+        {
+            var flags = GetWindowFlags(Handle);
+            return (flags & State.Maximized) != 0;
+        }
+
+        public override void Maximize()
+        {
+            Sdl.MaximizeWindow(Handle);
+        }
+        // End Fumen Modification
     }
 }
