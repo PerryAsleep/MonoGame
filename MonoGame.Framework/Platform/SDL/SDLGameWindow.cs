@@ -373,7 +373,7 @@ namespace Microsoft.Xna.Framework
         public override void SetResolution(int w, int h)
         {
             if (IsMaximized())
-                RestoreWindow(Handle);
+                Sdl.RestoreWindow(Handle);
 
             _game.graphicsDeviceManager.PreferredBackBufferWidth = w;
             _game.graphicsDeviceManager.PreferredBackBufferHeight = h;
@@ -382,8 +382,8 @@ namespace Microsoft.Xna.Framework
 
         public override bool IsMaximized()
         {
-            var flags = GetWindowFlags(Handle);
-            return (flags & State.Maximized) != 0;
+            var flags = Sdl.Window.GetWindowFlags(Handle);
+            return (flags & Sdl.Window.State.Maximized) != 0;
         }
 
         public override void Maximize()
