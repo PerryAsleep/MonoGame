@@ -22,10 +22,10 @@ namespace Microsoft.Xna.Framework.Input
             {
                 if (X11Display == IntPtr.Zero)
                 {
-                    X11Display = XOpenDisplay(IntPtr.Zero);
+                    X11Display = X11.OpenDisplay(IntPtr.Zero);
                     X11DisplayCount++;
                 }
-                Handle = XCreateFontCursor(X11Display, GetX11Cursor(cursor));
+                Handle = X11.CreateFontCursor(X11Display, GetX11Cursor(cursor));
             }
             else
             {
@@ -36,6 +36,20 @@ namespace Microsoft.Xna.Framework.Input
 
         private static void PlatformInitalize()
         {
+            // Begin Fumen Modification
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                try
+                {
+                    X11Available = X11.Initialize();
+                }
+                catch (DllNotFoundException)
+                {
+                    X11Available = false;
+                }
+            }
+            // End Fumen Modification
+
             Arrow = new MouseCursor(Sdl.Mouse.SystemCursor.Arrow);
             IBeam = new MouseCursor(Sdl.Mouse.SystemCursor.IBeam);
             Wait = new MouseCursor(Sdl.Mouse.SystemCursor.Wait);
@@ -84,11 +98,11 @@ namespace Microsoft.Xna.Framework.Input
             //Sdl.Mouse.FreeCursor(Handle);
             if (ShouldUseX11Cursor())
             {
-                XFreeCursor(X11Display, Handle);
+                X11.FreeCursor(X11Display, Handle);
                 X11DisplayCount--;
                 if (X11DisplayCount == 0 && X11Display != IntPtr.Zero)
                 {
-                    XCloseDisplay(X11Display);
+                    X11.CloseDisplay(X11Display);
                     X11Display = IntPtr.Zero;
                 }
             }
@@ -101,45 +115,13 @@ namespace Microsoft.Xna.Framework.Input
         }
 
         // Begin Fumen Modification
-        private static bool? X11Available;
+        private static bool X11Available;
         private static IntPtr X11Display;
         private static int X11DisplayCount = 0;
 
-        private static bool IsX11Available()
-        {
-            if (!X11Available.HasValue)
-            {
-                try
-                {
-                    NativeLibrary.Load("libX11");
-                    X11Available = true;
-                }
-                catch (DllNotFoundException)
-                {
-                    X11Available = false;
-                }
-            }
-            return X11Available.Value;
-        }
-
-        [DllImport("libX11")]
-        private static extern IntPtr XOpenDisplay(IntPtr display);
-
-        [DllImport("libX11")]
-        private static extern IntPtr XCreateFontCursor(IntPtr display, uint shape);
-
-        [DllImport("libX11")]
-        private static extern int XDefineCursor(IntPtr display, IntPtr window, IntPtr cursor);
-
-        [DllImport("libX11")]
-        private static extern int XFreeCursor(IntPtr display, IntPtr cursor);
-
-        [DllImport("libX11")]
-        private static extern int XCloseDisplay(IntPtr display);
-
         private static bool ShouldUseX11Cursor()
         {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && IsX11Available();
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && X11Available;
         }
 
         private static uint GetX11Cursor(Sdl.Mouse.SystemCursor cursorType)
@@ -178,8 +160,8 @@ namespace Microsoft.Xna.Framework.Input
         {
             if (ShouldUseX11Cursor())
             {
-                IntPtr display = XOpenDisplay(IntPtr.Zero);
-                XDefineCursor(display, windowHandle, cursor.Handle);
+                IntPtr display = X11.OpenDisplay(IntPtr.Zero);
+                X11.DefineCursor(display, windowHandle, cursor.Handle);
             }
             else
             {
