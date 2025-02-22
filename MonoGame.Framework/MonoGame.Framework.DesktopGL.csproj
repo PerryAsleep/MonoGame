@@ -42,7 +42,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Platform\Input\X11.cs" />
     <Compile Include="Platform\TitleContainer.Desktop.cs" />
     <Compile Include="Platform\Audio\OggStream.cs" />
     <Compile Include="Platform\Audio\Xact\WaveBank.Default.cs" />
