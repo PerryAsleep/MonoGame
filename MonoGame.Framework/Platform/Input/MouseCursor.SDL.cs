@@ -4,9 +4,6 @@
 
 using System;
 using System.IO;
-// Begin Fumen Modification
-using System.Runtime.InteropServices;
-// End Fumen Modification
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Framework.Utilities;
 
@@ -16,22 +13,7 @@ namespace Microsoft.Xna.Framework.Input
     {
         private MouseCursor(Sdl.Mouse.SystemCursor cursor)
         {
-            // Begin Fumen Modification
-            // Handle = Sdl.Mouse.CreateSystemCursor(cursor);
-            if (ShouldUseX11Cursor())
-            {
-                if (X11Display == IntPtr.Zero)
-                {
-                    X11Display = XOpenDisplay(IntPtr.Zero);
-                    X11DisplayCount++;
-                }
-                Handle = XCreateFontCursor(X11Display, GetX11Cursor(cursor));
-            }
-            else
-            {
-                Handle = Sdl.Mouse.CreateSystemCursor(cursor);
-            }
-            // End Fumen Modification
+            Handle = Sdl.Mouse.CreateSystemCursor(cursor);
         }
 
         private static void PlatformInitalize()
@@ -79,113 +61,9 @@ namespace Microsoft.Xna.Framework.Input
         {
             if (Handle == IntPtr.Zero)
                 return;
-
-            // Begin Fumen Modification
-            //Sdl.Mouse.FreeCursor(Handle);
-            if (ShouldUseX11Cursor())
-            {
-                XFreeCursor(X11Display, Handle);
-                X11DisplayCount--;
-                if (X11DisplayCount == 0 && X11Display != IntPtr.Zero)
-                {
-                    XCloseDisplay(X11Display);
-                    X11Display = IntPtr.Zero;
-                }
-            }
-            else
-            {
-                Sdl.Mouse.FreeCursor(Handle);
-            }
-            // End Fumen Modification
+            
+            Sdl.Mouse.FreeCursor(Handle);
             Handle = IntPtr.Zero;
         }
-
-        // Begin Fumen Modification
-        private static bool? X11Available;
-        private static IntPtr X11Display;
-        private static int X11DisplayCount = 0;
-
-        private static bool IsX11Available()
-        {
-            if (!X11Available.HasValue)
-            {
-                try
-                {
-                    NativeLibrary.Load("libX11");
-                    X11Available = true;
-                }
-                catch (DllNotFoundException)
-                {
-                    X11Available = false;
-                }
-            }
-            return X11Available.Value;
-        }
-
-        [DllImport("libX11")]
-        private static extern IntPtr XOpenDisplay(IntPtr display);
-
-        [DllImport("libX11")]
-        private static extern IntPtr XCreateFontCursor(IntPtr display, uint shape);
-
-        [DllImport("libX11")]
-        private static extern int XDefineCursor(IntPtr display, IntPtr window, IntPtr cursor);
-
-        [DllImport("libX11")]
-        private static extern int XFreeCursor(IntPtr display, IntPtr cursor);
-
-        [DllImport("libX11")]
-        private static extern int XCloseDisplay(IntPtr display);
-
-        private static bool ShouldUseX11Cursor()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && IsX11Available();
-        }
-
-        private static uint GetX11Cursor(Sdl.Mouse.SystemCursor cursorType)
-        {
-            switch (cursorType)
-            {
-                case Sdl.Mouse.SystemCursor.Arrow:
-                    return 2; // XC_left_ptr
-                case Sdl.Mouse.SystemCursor.IBeam:
-                    return 152; // XC_xterm
-                case Sdl.Mouse.SystemCursor.Wait:
-                   return 150; // XC_watch
-                case Sdl.Mouse.SystemCursor.Crosshair:
-                    return 34; // XC_crosshair
-                case Sdl.Mouse.SystemCursor.WaitArrow:
-                    return 150; // XC_watch
-                case Sdl.Mouse.SystemCursor.SizeNWSE:
-                    return 14; // XC_bottom_right_corner
-                case Sdl.Mouse.SystemCursor.SizeNESW:
-                    return 12; // XC_bottom_left_corner
-                case Sdl.Mouse.SystemCursor.SizeWE:
-                    return 108; // XC_sb_h_double_arrow
-                case Sdl.Mouse.SystemCursor.SizeNS:
-                    return 116; // XC_sb_v_double_arrow
-                case Sdl.Mouse.SystemCursor.SizeAll:
-                    return 52; // XC_fleur;
-                case Sdl.Mouse.SystemCursor.No:
-                    return 0; // XC_X_cursor
-                case Sdl.Mouse.SystemCursor.Hand:
-                    return 2; // XC_hand2
-            }
-            return 2; // XC_left_ptr
-        }
-
-        public static void SetCursor(MouseCursor cursor, IntPtr windowHandle)
-        {
-            if (ShouldUseX11Cursor())
-            {
-                IntPtr display = XOpenDisplay(IntPtr.Zero);
-                XDefineCursor(display, windowHandle, cursor.Handle);
-            }
-            else
-            {
-                Sdl.Mouse.SetCursor(cursor.Handle);
-            }
-        }
-        // End Fumen Modification
     }
 }

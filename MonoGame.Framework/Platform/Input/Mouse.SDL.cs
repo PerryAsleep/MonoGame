@@ -52,10 +52,7 @@ namespace Microsoft.Xna.Framework.Input
 
         private static void PlatformSetCursor(MouseCursor cursor)
         {
-            // Begin Fumen Modification
-            //Sdl.Mouse.SetCursor(cursor.Handle);
-            MouseCursor.SetCursor(cursor, PlatformGetWindowHandle());
-            // End Fumen Modification
+            Sdl.Mouse.SetCursor(cursor.Handle);
         }
     }
 }
