@@ -81,9 +81,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="MonoGame.bmp">
+	<!-- Begin Fumen Modification
+	<EmbeddedResource Include="MonoGame.bmp">
       <LogicalName>MonoGame.bmp</LogicalName>
     </EmbeddedResource>
+	End Fumen Modification-->
     <EmbeddedResource Include="..\ThirdParty\SDL_GameControllerDB\gamecontrollerdb.txt">
       <LogicalName>gamecontrollerdb.txt</LogicalName>
     </EmbeddedResource>
