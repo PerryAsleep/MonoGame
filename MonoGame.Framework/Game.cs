@@ -411,6 +411,19 @@ namespace Microsoft.Xna.Framework
             _suppressDraw = true;
         }
 
+        // Begin Fumen Modification
+        /// <summary>
+        /// The window/platform has indicated the user is requesting shutdown.
+        /// Return whether or not that shutdown should be allowed.
+        /// Games may want to prevent this in situations like having unsaved changes.
+        /// </summary>
+        /// <returns>True if the app should shut down and false otherwise.</returns>
+        public virtual bool HandleExitRequest()
+        {
+            return true;
+        }
+        // End Fumen Modification
+
         /// <summary>
         /// Reset the elapsed game time to <see cref="TimeSpan.Zero"/>.
         /// </summary>

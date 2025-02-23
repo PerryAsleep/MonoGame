@@ -25,6 +25,9 @@ namespace Microsoft.Xna.Framework
         private readonly List<Keys> _keys;
 
         private int _isExiting;
+        // Begin Fumen Modification
+        private bool _isExitRequested;
+        // End Fumen Modification
         private SdlGameWindow _view;
 
         private readonly List<string> _dropList;
@@ -93,6 +96,16 @@ namespace Microsoft.Xna.Framework
                 Threading.Run();
                 GraphicsDevice.DisposeContexts();
 
+                // Begin Fumen Modification
+                if (_isExitRequested)
+                {
+                    _isExitRequested = false;
+                    if (Game.HandleExitRequest())
+                    {
+                        _isExiting++;
+                    }
+                }
+                // End Fumen Modification
                 if (_isExiting > 0)
                     break;
             }
@@ -107,7 +120,10 @@ namespace Microsoft.Xna.Framework
                 switch (ev.Type)
                 {
                     case Sdl.EventType.Quit:
-                        _isExiting++;
+                        // Begin Fumen Modification
+                        //_isExiting++;
+                        _isExitRequested = true;
+                        // End Fumen Modification
                         break;
                     case Sdl.EventType.JoyDeviceAdded:
                         Joystick.AddDevices();
@@ -225,7 +241,10 @@ namespace Microsoft.Xna.Framework
                                 _view.Moved();
                                 break;
                             case Sdl.Window.EventId.Close:
-                                _isExiting++;
+                                // Begin Fumen Modification
+                                //_isExiting++;
+                                _isExitRequested = true;
+                                // End Fumen Modification
                                 break;
                         }
                         break;

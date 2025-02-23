@@ -170,6 +170,10 @@ namespace MonoGame.Framework
 
             Form.KeyPress += OnKeyPress;
 
+            // Begin Fumen Modification
+            Form.FormClosing += OnFormClosing;
+            // End Fumen Modification
+
             RegisterToAllWindows();
         }
 
@@ -361,6 +365,13 @@ namespace MonoGame.Framework
             var key = (Keys) (VkKeyScanEx(e.KeyChar, InputLanguage.CurrentInputLanguage.Handle) & 0xff);
             OnTextInput(new TextInputEventArgs(e.KeyChar, key));
         }
+
+        // Begin Fumen Modification
+        private void OnFormClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = !Game.HandleExitRequest();
+        }
+        // End Fumen Modification
 
         internal void Initialize(int width, int height)
         {
