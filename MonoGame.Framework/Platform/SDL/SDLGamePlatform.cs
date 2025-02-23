@@ -69,6 +69,19 @@ namespace Microsoft.Xna.Framework
         {
             SdlRunLoop();
 
+            // Begin Fumen Modification
+            // On some platforms SDL emits an event that the window has resized when
+            // we start it maximized. On some platforms it does not. Given we cannot
+            // rely on it, if we are maximized we should manually update the viewport
+            // size.
+            if (_view.IsMaximized())
+            {
+                var displayIndex = Sdl.Window.GetDisplayIndex(_view.Handle);
+                Sdl.Display.GetUsableBounds(displayIndex, out var bounds);
+                _view.ClientResize(bounds.Width, bounds.Height);
+            }
+            // End Fumen Modification
+
             base.BeforeInitialize();
         }
 
@@ -114,6 +127,10 @@ namespace Microsoft.Xna.Framework
         private void SdlRunLoop()
         {
             Sdl.Event ev;
+
+            // Begin Fumen Modification
+            var wasMaximized = Window.IsMaximized();
+            // End Fumen Modification
 
             while (Sdl.PollEvent(out ev) == 1)
             {
@@ -227,6 +244,16 @@ namespace Microsoft.Xna.Framework
 
                         switch (ev.Window.EventID)
                         {
+                            // Begin Fumen Modification
+                            case Sdl.Window.EventId.Shown:
+                                // On SDL on Linux when the window is started maximized the first
+                                // Shown even unmaximizes it. Do not let it do this.
+                                if (wasMaximized && !Window.IsMaximized())
+                                {
+                                    Window.Maximize();
+                                }
+                                break;
+                            // End Fumen Modification
                             case Sdl.Window.EventId.Resized:
                             case Sdl.Window.EventId.SizeChanged:
                                 _view.ClientResize(ev.Window.Data1, ev.Window.Data2);
@@ -271,6 +298,10 @@ namespace Microsoft.Xna.Framework
 
                         break;
                 }
+
+                // Begin Fumen Modification
+                wasMaximized = Window.IsMaximized();
+                // End Fumen Modification
             }
         }
 
