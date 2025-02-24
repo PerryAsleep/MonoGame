@@ -119,9 +119,11 @@ namespace Microsoft.Xna.Framework.Windows
                     HandleKeyMessage(ref m);
                     break;
 
-                case WM_DROPFILES:
-                    HandleDropMessage(ref m);
-                    break;
+                // Begin Fumen Modification
+                //case WM_DROPFILES:
+                //    HandleDropMessage(ref m);
+                //    break;
+                // End Fumen Modification
 #endif
                 case WM_SYSCOMMAND:
 
@@ -208,28 +210,30 @@ namespace Microsoft.Xna.Framework.Windows
 
         }
 
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
-        private static extern uint DragQueryFile(IntPtr hDrop, uint iFile,
-            [Out] StringBuilder lpszFile, uint cch);
+        // Begin Fumen Modification
+        //[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        //private static extern uint DragQueryFile(IntPtr hDrop, uint iFile,
+        //    [Out] StringBuilder lpszFile, uint cch);
 
-        void HandleDropMessage(ref Message m)
-        {
-            IntPtr hdrop = m.WParam;
+        //void HandleDropMessage(ref Message m)
+        //{
+        //    IntPtr hdrop = m.WParam;
 
-            uint count = DragQueryFile(hdrop, uint.MaxValue, null, 0);
+        //    uint count = DragQueryFile(hdrop, uint.MaxValue, null, 0);
 
-            string[] files = new string[count];
-            for (uint i = 0; i < count; i++)
-            {
-                uint buffSize = DragQueryFile(hdrop, i, null, int.MaxValue);
-                StringBuilder builder = new StringBuilder((int)buffSize);
-                DragQueryFile(hdrop, i, builder, buffSize);
-                files[i] = builder.ToString();
-            }
+        //    string[] files = new string[count];
+        //    for (uint i = 0; i < count; i++)
+        //    {
+        //        uint buffSize = DragQueryFile(hdrop, i, null, int.MaxValue);
+        //        StringBuilder builder = new StringBuilder((int)buffSize);
+        //        DragQueryFile(hdrop, i, builder, buffSize);
+        //        files[i] = builder.ToString();
+        //    }
 
-            _window.OnFileDrop(new FileDropEventArgs(files));
-            m.Result = IntPtr.Zero;
-        }
+        //    _window.OnFileDrop(new FileDropEventArgs(files));
+        //    m.Result = IntPtr.Zero;
+        //}
+        // End Fumen Modification
 
         private static Microsoft.Xna.Framework.Input.Keys KeyCodeTranslate(
             System.Windows.Forms.Keys keyCode, bool extended, long scancode)

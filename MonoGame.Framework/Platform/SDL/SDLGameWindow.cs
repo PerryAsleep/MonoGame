@@ -403,6 +403,14 @@ namespace Microsoft.Xna.Framework
             Sdl.GameController.SDL_Free(textPtr);
             return text;
         }
+
+        // Begin Fumen Modification
+        public override void AllowDragDrop(bool allow)
+        {
+            // TODO: Conditionally enable drag / drop support.
+        }
+        // End Fumen Modification
+
         // End Fumen Modification
     }
 }

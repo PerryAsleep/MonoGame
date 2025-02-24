@@ -246,21 +246,11 @@ namespace MonoGame.Framework
             _platform.IsActive = true;
             Keyboard.SetActive(true);
 
-            // Begin Fumen modification.
-            // Calling DragAcceptFiles here forces the application to opt into drag and drop behavior.
-            // This results in the cursor changing to the "Copy" effect when dragging a file into the
-            // application, even if the application attempts to explicitly set it to another value like
-            // "None" to indicate the file is not supported.
-            // This also prevents applications from opting out of drag and drop feedback.
-            // In order to allow the application to control drag and drop behavior without restrictions
-            // this call has been removed.
-            // This is not an ideal solution as it makes the WinFormsGameWindow not raise an event when
-            // a file is dropped, but this is a much simpler solution to allow an application which is
-            // only interested in a Windows Forms implementation to achieve correct drag and drop feedback
-            // than it would be to try and allow the application to provide configuration to the GameWindow
-            // to achieve this feedback generically.
+            // Begin Fumen Modification
             //DragAcceptFiles(Handle, true); //allows drag and dropping
-            // End Fumen modification.
+            Form.DragEnter += DragEnter;
+            Form.DragDrop += DragDrop;
+            // Begin Fumen Modification
         }
 
         private void OnDeactivate(object sender, EventArgs eventArgs)
@@ -274,6 +264,43 @@ namespace MonoGame.Framework
             _platform.IsActive = false;
             Keyboard.SetActive(false);
         }
+
+        // Begin Fumen Modification
+        public override void AllowDragDrop(bool allow)
+        {
+            Form.AllowDrop = allow;
+        }
+
+        /// <summary>
+        /// Called when dragging a file into the window.
+        /// </summary>
+        private void DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data == null)
+                return;
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+                return;
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var allowed = Game.OnDragEnter(files);
+
+            e.Effect = allowed ? DragDropEffects.Copy : DragDropEffects.None;
+        }
+
+        /// <summary>
+        /// Called when dropping a file into the window.
+        /// </summary>
+        private void DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data == null)
+                return;
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+                return;
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (files == null || files.Length == 0)
+                return;
+            OnFileDrop(new FileDropEventArgs(files));
+        }
+        // End Fumen Modification
 
         private void OnMouseScroll(object sender, MouseEventArgs mouseEventArgs)
         {

@@ -250,6 +250,10 @@ namespace Microsoft.Xna.Framework
 	    }
 #endif
 
+        // Begin Fumen Modification
+        public abstract void AllowDragDrop(bool allow);
+        // End Fumen Modification
+
         internal void OnFileDrop(FileDropEventArgs e)
         {
             EventHelpers.Raise(this, FileDrop, e);

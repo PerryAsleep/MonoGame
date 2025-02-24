@@ -432,6 +432,16 @@ namespace Microsoft.Xna.Framework
         {
             return Window.GetClipboardText();
         }
+
+        public void AllowDragDrop(bool allow)
+        {
+            Window.AllowDragDrop(allow);
+        }
+
+        public virtual bool OnDragEnter(string[] files)
+        {
+            return false;
+        }
         // End Fumen Modification
 
         /// <summary>

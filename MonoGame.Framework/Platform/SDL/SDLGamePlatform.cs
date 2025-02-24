@@ -284,6 +284,11 @@ namespace Microsoft.Xna.Framework
                         Sdl.Drop.SDL_Free(ev.Drop.File);
                         _dropList.Add(path);
 
+                        // Begin Fumen Modification
+                        var allowed = Game.OnDragEnter(_dropList.ToArray());
+                        // TODO: set cursor based on allowed state.
+                        // End Fumen Modification
+
                         break;
 
                     case Sdl.EventType.DropComplete:
