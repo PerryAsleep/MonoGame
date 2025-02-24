@@ -422,6 +422,16 @@ namespace Microsoft.Xna.Framework
         {
             return true;
         }
+
+        public void SetClipboardText(string text)
+        {
+            Window.SetClipboardText(text);
+        }
+
+        public string GetClipboardText()
+        {
+            return Window.GetClipboardText();
+        }
         // End Fumen Modification
 
         /// <summary>

@@ -267,6 +267,8 @@ namespace Microsoft.Xna.Framework
         public abstract void SetResolution(int x, int y);
         public abstract bool IsMaximized();
         public abstract void Maximize();
+        public abstract void SetClipboardText(string text);
+        public abstract string GetClipboardText();
         // End Fumen Modification
 
 #if DIRECTX && WINDOWS

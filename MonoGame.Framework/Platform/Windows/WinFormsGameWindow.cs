@@ -731,6 +731,16 @@ namespace MonoGame.Framework
         {
             Form.WindowState = FormWindowState.Maximized;
         }
+
+        public override void SetClipboardText(string text)
+        {
+            Clipboard.SetText(text);
+        }
+
+        public override string GetClipboardText()
+        {
+            return Clipboard.GetText();
+        }
         // End Fumen Modification
     }
 }

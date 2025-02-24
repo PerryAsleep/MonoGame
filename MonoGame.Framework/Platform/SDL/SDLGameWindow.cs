@@ -390,6 +390,17 @@ namespace Microsoft.Xna.Framework
         {
             Sdl.MaximizeWindow(Handle);
         }
+
+        public override void SetClipboardText(string text)
+        {
+            // TODO
+        }
+
+        public override string GetClipboardText()
+        {
+            // TODO
+            return null;
+        }
         // End Fumen Modification
     }
 }
