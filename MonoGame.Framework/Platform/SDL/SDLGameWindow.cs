@@ -393,13 +393,15 @@ namespace Microsoft.Xna.Framework
 
         public override void SetClipboardText(string text)
         {
-            // TODO
+            Sdl.SetClipboardText(text);
         }
 
         public override string GetClipboardText()
         {
-            // TODO
-            return null;
+            var textPtr = Sdl.GetClipboardText();
+            var text = System.Runtime.InteropServices.Marshal.PtrToStringAuto(textPtr);
+            Sdl.GameController.SDL_Free(textPtr);
+            return text;
         }
         // End Fumen Modification
     }

@@ -320,6 +320,14 @@ internal static class Sdl
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void d_sdl_restorewindow(IntPtr window);
     public static d_sdl_restorewindow RestoreWindow = FuncLoader.LoadFunction<d_sdl_restorewindow>(NativeLibrary, "SDL_RestoreWindow");
+    
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate IntPtr d_sdl_getclipboardtext();
+    public static d_sdl_getclipboardtext GetClipboardText = FuncLoader.LoadFunction<d_sdl_getclipboardtext>(NativeLibrary, "SDL_GetClipboardText");
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int d_sdl_setclipboardtext(string text);
+    public static d_sdl_setclipboardtext SetClipboardText = FuncLoader.LoadFunction<d_sdl_setclipboardtext>(NativeLibrary, "SDL_SetClipboardText");
     // End Fumen Modification
 
     public static class Window
