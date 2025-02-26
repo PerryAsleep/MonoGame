@@ -249,6 +249,13 @@ namespace Microsoft.Xna.Framework.Graphics
             });
         }
 
+        // Begin Fumen Modification
+        private static bool PlatformCanGetDataOnAnyThread()
+        {
+            return false;
+        }
+        // End Fumen Modification
+
         private void PlatformGetData<T>(int level, int arraySlice, Rectangle rect, T[] data, int startIndex, int elementCount)
             where T : struct
         {

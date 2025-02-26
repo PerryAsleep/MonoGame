@@ -261,6 +261,13 @@ namespace Microsoft.Xna.Framework.Graphics
             PlatformSetData(0, data, 0, data.Length);
         }
 
+        // Begin Fumen Modification
+        public static bool CanGetDataOnAnyThread()
+        {
+            return PlatformCanGetDataOnAnyThread();
+        }
+        // End Fumen Modification
+
         /// <summary>
         /// Retrieves the contents of the texture
         /// Throws ArgumentException if data is null, data.length is too short or
