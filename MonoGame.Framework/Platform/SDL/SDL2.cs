@@ -528,6 +528,15 @@ internal static class Sdl
         {
             GetError(SDL_GetDisplayUsableBounds(displayIndex, out rect));
         }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int d_sdl_getdisplaydpi(int displayIndex, out float ddpi, out float hdpi, out float vdpi);
+        private static d_sdl_getdisplaydpi SDL_GetDisplayDPI = FuncLoader.LoadFunction<d_sdl_getdisplaydpi>(NativeLibrary, "SDL_GetDisplayDPI");
+
+        public static void GetDisplayDPI(int displayIndex, out float ddpi, out float hdpi, out float vdpi)
+        {
+            GetError(SDL_GetDisplayDPI(displayIndex, out ddpi, out hdpi, out vdpi));
+        }
         // End Fumen Modification
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

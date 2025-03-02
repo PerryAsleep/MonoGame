@@ -411,10 +411,10 @@ namespace Microsoft.Xna.Framework
 
         public override double GetMonitorDpiScale()
         {
-            // TODO: Implement monitor DPI checks.
-            return 1.0;
+            var displayIndex = Sdl.Window.GetDisplayIndex(Handle);
+            Sdl.Display.GetDisplayDPI(displayIndex, out _, out var hdpi, out _);
+            return hdpi / 96.0;
         }
-
         // End Fumen Modification
     }
 }
