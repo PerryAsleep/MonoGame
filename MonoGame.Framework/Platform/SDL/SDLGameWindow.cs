@@ -404,12 +404,16 @@ namespace Microsoft.Xna.Framework
             return text;
         }
 
-        // Begin Fumen Modification
         public override void AllowDragDrop(bool allow)
         {
             // TODO: Conditionally enable drag / drop support.
         }
-        // End Fumen Modification
+
+        public override double GetMonitorDpiScale()
+        {
+            // TODO: Implement monitor DPI checks.
+            return 1.0;
+        }
 
         // End Fumen Modification
     }

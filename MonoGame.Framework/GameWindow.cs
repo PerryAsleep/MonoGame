@@ -273,6 +273,7 @@ namespace Microsoft.Xna.Framework
         public abstract void Maximize();
         public abstract void SetClipboardText(string text);
         public abstract string GetClipboardText();
+        public abstract double GetMonitorDpiScale();
         // End Fumen Modification
 
 #if DIRECTX && WINDOWS

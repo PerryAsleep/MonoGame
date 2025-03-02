@@ -442,6 +442,12 @@ namespace Microsoft.Xna.Framework
         {
             return false;
         }
+
+        public double GetMonitorDpiScale()
+        {
+            return Window.GetMonitorDpiScale();
+        }
+
         // End Fumen Modification
 
         /// <summary>

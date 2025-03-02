@@ -152,6 +152,11 @@ namespace MonoGame.Framework
             Form.FormBorderStyle = FormBorderStyle.FixedSingle;
             Form.StartPosition = FormStartPosition.Manual;
 
+            // Begin Fumen Modification
+            // Do not allow autoscaling. We want to let the application control DPI scaling.
+            Form.AutoScaleMode = AutoScaleMode.None;
+            // End Fumen Modification
+
             // Capture mouse events.
             Mouse.WindowHandle = Form.Handle;
             Form.MouseWheel += OnMouseScroll;
@@ -767,6 +772,20 @@ namespace MonoGame.Framework
         public override string GetClipboardText()
         {
             return Clipboard.GetText();
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+        [DllImport("Shcore.dll")]
+        private static extern IntPtr GetDpiForMonitor(IntPtr hmonitor, int dpiType, out uint dpiX, out uint dpiY);
+
+        public override double GetMonitorDpiScale()
+        {
+            const uint MONITOR_DEFAULTTONEAREST = 2;
+            var hMonitor = MonitorFromWindow(Form.Handle, MONITOR_DEFAULTTONEAREST);
+            GetDpiForMonitor(hMonitor, 0, out var dpiX, out _);
+            return dpiX / 96.0;
         }
         // End Fumen Modification
     }
