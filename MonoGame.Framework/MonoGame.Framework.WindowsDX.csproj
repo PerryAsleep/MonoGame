@@ -8,6 +8,8 @@
     <PackageTags>monogame;.net core;core;.net standard;standard;windowsdx</PackageTags>
     <PackageId>MonoGame.Framework.WindowsDX</PackageId>
     <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
   </PropertyGroup>
   <ItemGroup>
