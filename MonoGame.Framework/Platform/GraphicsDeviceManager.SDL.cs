@@ -3,6 +3,9 @@
 // file 'LICENSE.txt', which is part of this source code package.
 
 using Microsoft.Xna.Framework.Graphics;
+// Begin Fumen Modification
+using MonoGame.Framework.Utilities;
+// End Fumen Modification
 
 namespace Microsoft.Xna.Framework
 {
@@ -10,6 +13,15 @@ namespace Microsoft.Xna.Framework
     {
         partial void PlatformInitialize(PresentationParameters presentationParameters)
         {
+            // Begin Fumen Modification
+            if (CurrentPlatform.OS == OS.MacOSX)
+            {
+                var scale = ((SdlGameWindow)_game.Window).GetPlatformDpiScale();
+                _preferredBackBufferWidth = (int)(_preferredBackBufferWidth * scale);
+                _preferredBackBufferHeight = (int)(_preferredBackBufferHeight * scale);
+            }
+            // End Fumen Modification
+
             var surfaceFormat = _game.graphicsDeviceManager.PreferredBackBufferFormat.GetColorFormat();
             var depthStencilFormat = _game.graphicsDeviceManager.PreferredDepthStencilFormat;
 

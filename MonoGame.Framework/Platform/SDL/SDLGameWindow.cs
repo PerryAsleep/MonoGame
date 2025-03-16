@@ -93,6 +93,9 @@ namespace Microsoft.Xna.Framework
         private string _screenDeviceName;
         private int _width, _height;
         private bool _wasMoved, _supressMoved;
+        // Begin Fumen Modification
+        private double _platformDpiScale = 1.0;
+        // End Fumen Modification
 
         public SdlGameWindow(Game game)
         {
@@ -106,6 +109,11 @@ namespace Microsoft.Xna.Framework
 
             Sdl.SetHint("SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS", "0");
             Sdl.SetHint("SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS", "1");
+
+            // Begin Fumen Modification
+            if (CurrentPlatform.OS == OS.MacOSX)
+                Sdl.SetHint("SDL_HINT_VIDEO_HIGHDPI_DISABLED", "0");
+            // End Fumen Modification
 
             // when running NUnit tests entry assembly can be null
             if (Assembly.GetEntryAssembly() != null)
@@ -129,9 +137,23 @@ namespace Microsoft.Xna.Framework
                 }
             }
 
+            // Begin Fumen Modification
+            // Get the DPI scale by comparing the window size to the drawable size.
+            // For MacOS with HiDPI scaling SDL will report half sizes for the window.
+            // Getting the actual scale here lets us compensate.
+            var initFlags = Sdl.Window.State.Hidden | Sdl.Window.State.FullscreenDesktop;
+            if (CurrentPlatform.OS == OS.MacOSX)
+                initFlags |= Sdl.Window.State.AllowHighDPI;
             _handle = Sdl.Window.Create("", 0, 0,
                 GraphicsDeviceManager.DefaultBackBufferWidth, GraphicsDeviceManager.DefaultBackBufferHeight,
-                Sdl.Window.State.Hidden | Sdl.Window.State.FullscreenDesktop);
+                initFlags);
+            if (CurrentPlatform.OS == OS.MacOSX)
+            {
+                Sdl.Window.GetSize(_handle, out var width, out _);
+                Sdl.GL.GetDrawableSize(_handle, out var drawableWidth, out _);
+                _platformDpiScale = (double)drawableWidth / width;
+            }
+            // End Fumen Modification
         }
 
         // Begin Fumen Modification
@@ -146,6 +168,8 @@ namespace Microsoft.Xna.Framework
                 Sdl.Window.State.MouseFocus;
 
             // Begin Fumen Modification
+            if (CurrentPlatform.OS == OS.MacOSX)
+                initflags |= Sdl.Window.State.AllowHighDPI;
             if (presentationParameters.IsMaximized)
                 initflags |= Sdl.Window.State.Maximized;
             // End Fumen Modification
@@ -317,6 +341,10 @@ namespace Microsoft.Xna.Framework
                 if (height > bounds.Height)
                     height = bounds.Height;
             }
+
+            // Convert SDL points to pixels for platforms which report values in points.
+            width = (int)(width * _platformDpiScale);
+            height = (int)(height * _platformDpiScale);
             // End Fumen Modification
 
             // SDL reports many resize events even if the Size didn't change.
@@ -411,9 +439,16 @@ namespace Microsoft.Xna.Framework
 
         public override double GetMonitorDpiScale()
         {
+            if (CurrentPlatform.OS == OS.MacOSX)
+                return _platformDpiScale;
             var displayIndex = Sdl.Window.GetDisplayIndex(Handle);
             Sdl.Display.GetDisplayDPI(displayIndex, out _, out var hdpi, out _);
             return hdpi / 96.0;
+        }
+
+        public override double GetPlatformDpiScale()
+        {
+            return _platformDpiScale;
         }
         // End Fumen Modification
     }

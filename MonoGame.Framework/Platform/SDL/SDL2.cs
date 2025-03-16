@@ -684,6 +684,12 @@ internal static class Sdl
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void d_sdl_gl_swapwindow(IntPtr window);
         public static d_sdl_gl_swapwindow SwapWindow = FuncLoader.LoadFunction<d_sdl_gl_swapwindow>(NativeLibrary, "SDL_GL_SwapWindow");
+
+        // Begin Fumen Modification
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void d_sdl_gldrawablesize(IntPtr window, out int w, out int h);
+        public static d_sdl_gldrawablesize GetDrawableSize = FuncLoader.LoadFunction<d_sdl_gldrawablesize>(NativeLibrary, "SDL_GL_GetDrawableSize");
+        // End Fumen Modification
     }
 
     public static class Mouse

@@ -367,6 +367,11 @@ namespace Microsoft.Xna.Framework
 
         public override void EndScreenDeviceChange(string screenDeviceName, int clientWidth, int clientHeight)
         {
+            // Begin Fumen Modification
+            var scale = Window.GetPlatformDpiScale();
+            clientWidth = (int)(clientWidth / scale);
+            clientHeight = (int)(clientHeight / scale);
+            // End Fumen Modification
             _view.EndScreenDeviceChange(screenDeviceName, clientWidth, clientHeight);
         }
 

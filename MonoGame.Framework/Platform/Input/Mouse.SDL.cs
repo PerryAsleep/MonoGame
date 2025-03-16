@@ -39,6 +39,12 @@ namespace Microsoft.Xna.Framework.Input
             window.MouseState.X = x - clientBounds.X;
             window.MouseState.Y = y - clientBounds.Y;
 
+            // Begin Fumen Modification
+            var scale = window.GetPlatformDpiScale();
+            window.MouseState.X = (int)(window.MouseState.X * scale);
+            window.MouseState.Y = (int)(window.MouseState.Y * scale);
+            // End Fumen Modification
+
             return window.MouseState;
         }
 
@@ -46,6 +52,12 @@ namespace Microsoft.Xna.Framework.Input
         {
             PrimaryWindow.MouseState.X = x;
             PrimaryWindow.MouseState.Y = y;
+
+            // Begin Fumen Modification
+            var scale = PrimaryWindow.GetPlatformDpiScale();
+            x = (int)(x / scale);
+            y = (int)(y / scale);
+            // End Fumen Modification
             
             Sdl.Mouse.WarpInWindow(PrimaryWindow.Handle, x, y);
         }
