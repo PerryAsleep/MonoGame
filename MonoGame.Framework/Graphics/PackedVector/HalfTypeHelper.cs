@@ -10,7 +10,9 @@ namespace Microsoft.Xna.Framework.Graphics.PackedVector
     internal class HalfTypeHelper
     {
         [StructLayout(LayoutKind.Explicit)]
-        private struct uif
+        // Begin Fumen Modification
+        private struct Uif
+        // End Fumen Modification
         {
             [FieldOffset(0)]
             public float f;
@@ -22,7 +24,9 @@ namespace Microsoft.Xna.Framework.Graphics.PackedVector
 
         internal static UInt16 Convert(float f)
         {
-            uif uif = new uif();
+            // Begin Fumen Modification
+            Uif uif = new Uif();
+            // End Fumen Modification
             uif.f = f;
             return Convert(uif.i);
         }
@@ -109,7 +113,9 @@ namespace Microsoft.Xna.Framework.Graphics.PackedVector
                 rst = (uint)(((((uint)value & 0x8000) << 16) | ((((((uint)value >> 10) & 0x1f) - 15) + 127) << 23)) | (mantissa << 13));
             }
 
-            var uif = new uif();
+            // Begin Fumen Modification
+            var uif = new Uif();
+            // End Fumen Modification
             uif.u = rst;
             return uif.f;
         }
