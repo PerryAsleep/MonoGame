@@ -1566,16 +1566,21 @@ namespace MonoGame.OpenGL
             if (string.IsNullOrEmpty (str)) {
                 return IntPtr.Zero;
             }
-            int num = Encoding.ASCII.GetMaxByteCount (str.Length) + 1;
-            IntPtr intPtr = Marshal.AllocHGlobal (num);
-            if (intPtr == IntPtr.Zero) {
-                throw new OutOfMemoryException ();
+            // Begin Fumen Modification
+            // Avoid the call to the deprecated RuntimeHelpers.OffsetToStringData function above.
+            // Use strict ASCII encoding.
+            var byteCount = Encoding.ASCII.GetByteCount(str) + 1;
+            var intPtr = Marshal.AllocHGlobal(byteCount);
+            if (intPtr == IntPtr.Zero)
+                throw new OutOfMemoryException();
+            var bytePtr = (byte*)intPtr;
+            fixed (char* charPtr = str)
+            {
+                var bytesWritten = Encoding.ASCII.GetBytes(charPtr, str.Length, bytePtr, byteCount - 1);
+                bytePtr[bytesWritten] = 0;
             }
-            fixed (char* chars = str + RuntimeHelpers.OffsetToStringData / 2) {
-                int bytes = Encoding.ASCII.GetBytes (chars, str.Length, (byte*)((void*)intPtr), num);
-                Marshal.WriteByte (intPtr, bytes, 0);
-                return intPtr;
-            }
+            return intPtr;
+            // End Fumen Modification
         }
 
         protected static void FreeStringArrayPtr (IntPtr ptr, int length)

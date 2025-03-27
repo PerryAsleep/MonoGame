@@ -188,6 +188,13 @@ internal static class Sdl
             return Major + "." + Minor + "." + Patch;
         }
 
+        // Begin Fumen Modification
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Major, Minor, Patch);
+        }
+        // End Fumen Modification
+
         private static int ConcatenateVersion(Version version)
         {
             // Account for a change in SDL2 version convention. After version 2.0.22,

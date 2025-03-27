@@ -44,7 +44,12 @@ namespace Microsoft.Xna.Framework.Graphics
 #endif
 
         private Color _blendFactor = Color.White;
+        // Begin Fumen Modification
+        // This is a partial class and not all platform partial implementations use _blendFactorDirty.
+#pragma warning disable CS0414
         private bool _blendFactorDirty;
+#pragma warning restore CS0414
+        // End Fumen Modification
 
         private BlendState _blendState;
         private BlendState _actualBlendState;

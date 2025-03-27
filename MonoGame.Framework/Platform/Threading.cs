@@ -168,7 +168,10 @@ namespace Microsoft.Xna.Framework
                 return; // return here to skip dispose
             }
 
-            resetEvent.Dispose();
+            // Begin Fumen Modification
+            // CS0162: Unreachable code due to return above.
+            //resetEvent.Dispose();
+            // End Fumen Modification
         }
 
         /// <summary>
