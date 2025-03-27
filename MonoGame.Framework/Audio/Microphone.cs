@@ -202,10 +202,16 @@ namespace Microsoft.Xna.Framework.Audio
 
         #region Public Events
 
+        // Begin Fumen Modification
+#pragma warning disable CS0067
+        // End Fumen Modification
         /// <summary>
         /// Event fired when the audio data are available.
         /// </summary>
         public event EventHandler<EventArgs> BufferReady;
+        // Begin Fumen Modification
+#pragma warning restore CS0067
+        // End Fumen Modification
 
         #endregion
 

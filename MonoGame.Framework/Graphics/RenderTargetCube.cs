@@ -43,7 +43,15 @@ namespace Microsoft.Xna.Framework.Graphics
 
 		public bool IsContentLost { get { return false; } }
 		public event EventHandler<EventArgs> ContentLost;
-		
+
+        // Begin Fumen Modification
+        // This method of dealing with CS0067 is copied from other partially implemented events in MonoGame.
+        private bool SuppressEventHandlerWarningsUntilEventsAreProperlyImplemented()
+        {
+            return ContentLost != null;
+        }
+        // End Fumen Modification
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderTargetCube"/> class.
         /// </summary>

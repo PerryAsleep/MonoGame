@@ -138,13 +138,19 @@ namespace Microsoft.Xna.Framework.Graphics
         // collected by holding a strong reference to it in this list.
         private readonly List<WeakReference> _resources = new List<WeakReference>();
 
-		// TODO Graphics Device events need implementing
-		public event EventHandler<EventArgs> DeviceLost;
+        // TODO Graphics Device events need implementing
+        // Begin Fumen Modification
+#pragma warning disable CS0067
+        // End Fumen Modification
+        public event EventHandler<EventArgs> DeviceLost;
 		public event EventHandler<EventArgs> DeviceReset;
 		public event EventHandler<EventArgs> DeviceResetting;
 		public event EventHandler<ResourceCreatedEventArgs> ResourceCreated;
 		public event EventHandler<ResourceDestroyedEventArgs> ResourceDestroyed;
         public event EventHandler<EventArgs> Disposing;
+        // Begin Fumen Modification
+#pragma warning restore CS0067
+        // End Fumen Modification
 
         internal event EventHandler<PresentationEventArgs> PresentationChanged;
 

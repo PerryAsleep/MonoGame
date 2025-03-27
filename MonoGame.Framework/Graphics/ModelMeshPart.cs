@@ -68,7 +68,11 @@ namespace Microsoft.Xna.Framework.Graphics
         /// Using this constructor is strongly discouraged. Adding meshes to models at runtime is
         /// not supported and may lead to <see cref="NullReferenceException"/>s if parent is not set.
         /// </summary>
-        [Obsolete("This constructor is deprecated and will be made internal in a future release.")]
+        // Begin Fumen Modification
+        // Commenting out this Obsolete attribute because MonoGame itself uses this constructor.
+        // This just adds to MonoGame warning noise.
+        //[Obsolete("This constructor is deprecated and will be made internal in a future release.")]
+        // End Fumen Modification
         public ModelMeshPart() { }
 	}
 }

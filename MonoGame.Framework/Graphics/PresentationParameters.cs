@@ -31,7 +31,9 @@ namespace Microsoft.Xna.Framework.Graphics
         private int backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
         private IntPtr deviceWindowHandle;
         private int multiSampleCount;
-        private bool disposed;
+        // Begin Fumen Modification
+        //private bool disposed;
+        // End Fumen Modification
         private bool isFullScreen;
         // Begin Fumen Modification
         private bool isMaximized;
