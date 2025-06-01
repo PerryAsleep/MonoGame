@@ -147,14 +147,21 @@ namespace Microsoft.Xna.Framework
             _handle = Sdl.Window.Create("", 0, 0,
                 GraphicsDeviceManager.DefaultBackBufferWidth, GraphicsDeviceManager.DefaultBackBufferHeight,
                 initFlags);
-            if (CurrentPlatform.OS == OS.MacOSX)
-            {
-                Sdl.Window.GetSize(_handle, out var width, out _);
-                Sdl.GL.GetDrawableSize(_handle, out var drawableWidth, out _);
-                _platformDpiScale = (double)drawableWidth / width;
-            }
+            RefreshCachedPlatformDpiScale();
             // End Fumen Modification
         }
+
+        // Begin Fumen Modification
+        private void RefreshCachedPlatformDpiScale()
+        {
+            if (CurrentPlatform.OS == OS.MacOSX)
+            {
+                Sdl.Window.GetSize(_handle, out var windowWidth, out _);
+                Sdl.GL.GetDrawableSize(_handle, out var drawableWidth, out _);
+                _platformDpiScale = (double)drawableWidth / windowWidth;
+            }
+        }
+        // End Fumen Modification
 
         // Begin Fumen Modification
         //internal void CreateWindow()
@@ -343,6 +350,7 @@ namespace Microsoft.Xna.Framework
             }
 
             // Convert SDL points to pixels for platforms which report values in points.
+            RefreshCachedPlatformDpiScale();
             width = (int)(width * _platformDpiScale);
             height = (int)(height * _platformDpiScale);
             // End Fumen Modification
