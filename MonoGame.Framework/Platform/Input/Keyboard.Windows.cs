@@ -54,6 +54,23 @@ namespace Microsoft.Xna.Framework.Input
             return new KeyboardState(_keys, Console.CapsLock, Console.NumberLock);
         }
 
+        // Begin Fumen Modification
+        public static void PlatformKeyDown(Keys key)
+        {
+            // Ignored.
+        }
+
+        public static void PlatformKeyUp(Keys key)
+        {
+            // Ignored.
+        }
+
+        public static void PlatformClearHeldKeys()
+        {
+            // Ignored.
+        }
+        // End Fumen Modification
+
         private static bool IsKeyReleased(byte keyCode)
         {
             return ((_keyState[keyCode] & 0x80) == 0);

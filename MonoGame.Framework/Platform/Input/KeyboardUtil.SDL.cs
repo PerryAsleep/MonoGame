@@ -6,9 +6,141 @@ using System.Collections.Generic;
 
 namespace Microsoft.Xna.Framework.Input
 {
-    internal static class KeyboardUtil
+    // Begin Fumen Modification
+    // internal static class KeyboardUtil
+    public static class KeyboardUtil
+    // End Fumen Modification
     {
         static Dictionary<int, Keys> _map;
+
+        // Begin Fumen Modification
+        private static readonly Dictionary<ushort, Keys> NSEventToKeys = new()
+        {
+            // Alphabet
+            [0x00] = Keys.A,
+            [0x0B] = Keys.B,
+            [0x08] = Keys.C,
+            [0x02] = Keys.D,
+            [0x0E] = Keys.E,
+            [0x03] = Keys.F,
+            [0x05] = Keys.G,
+            [0x04] = Keys.H,
+            [0x22] = Keys.I,
+            [0x26] = Keys.J,
+            [0x28] = Keys.K,
+            [0x25] = Keys.L,
+            [0x2E] = Keys.M,
+            [0x2D] = Keys.N,
+            [0x1F] = Keys.O,
+            [0x23] = Keys.P,
+            [0x0C] = Keys.Q,
+            [0x0F] = Keys.R,
+            [0x01] = Keys.S,
+            [0x11] = Keys.T,
+            [0x20] = Keys.U,
+            [0x09] = Keys.V,
+            [0x0D] = Keys.W,
+            [0x07] = Keys.X,
+            [0x10] = Keys.Y,
+            [0x06] = Keys.Z,
+
+            // Numbers (top row)
+            [0x12] = Keys.D1,
+            [0x13] = Keys.D2,
+            [0x14] = Keys.D3,
+            [0x15] = Keys.D4,
+            [0x17] = Keys.D5,
+            [0x16] = Keys.D6,
+            [0x1A] = Keys.D7,
+            [0x1C] = Keys.D8,
+            [0x19] = Keys.D9,
+            [0x1D] = Keys.D0,
+
+            // Symbols/punctuation
+            [0x18] = Keys.OemPlus,
+            [0x1B] = Keys.OemMinus,
+            [0x1E] = Keys.OemCloseBrackets,
+            [0x21] = Keys.OemOpenBrackets,
+            [0x29] = Keys.OemSemicolon,
+            [0x27] = Keys.OemQuotes,
+            [0x2A] = Keys.OemPipe,
+            [0x2B] = Keys.OemComma,
+            [0x2C] = Keys.OemQuestion,
+            [0x2F] = Keys.OemPeriod,
+            [0x32] = Keys.OemTilde,
+
+            // Whitespace/control
+            [0x31] = Keys.Space,
+            [0x30] = Keys.Tab,
+            [0x33] = Keys.Back,
+            [0x35] = Keys.Escape,
+            [0x24] = Keys.Enter,          // Return
+            [0x4C] = Keys.Enter,          // Keypad Enter
+
+            // Modifier keys
+            [0x38] = Keys.LeftShift,
+            [0x3C] = Keys.RightShift,
+            [0x3B] = Keys.LeftControl,
+            [0x3E] = Keys.RightControl,
+            [0x3A] = Keys.LeftAlt,
+            [0x3D] = Keys.RightAlt,
+            [0x39] = Keys.CapsLock,
+            [0x37] = Keys.LeftWindows,
+            [0x36] = Keys.RightWindows,
+
+            // Navigation/edit
+            [0x7B] = Keys.Left,
+            [0x7C] = Keys.Right,
+            [0x7D] = Keys.Down,
+            [0x7E] = Keys.Up,
+            [0x73] = Keys.Home,
+            [0x77] = Keys.End,
+            [0x74] = Keys.PageUp,
+            [0x79] = Keys.PageDown,
+            [0x47] = Keys.NumLock,
+            [0x75] = Keys.Delete,
+            [0x72] = Keys.Insert,
+
+            // Function keys
+            [0x7A] = Keys.F1,
+            [0x78] = Keys.F2,
+            [0x63] = Keys.F3,
+            [0x76] = Keys.F4,
+            [0x60] = Keys.F5,
+            [0x61] = Keys.F6,
+            [0x62] = Keys.F7,
+            [0x64] = Keys.F8,
+            [0x65] = Keys.F9,
+            [0x6D] = Keys.F10,
+            [0x67] = Keys.F11,
+            [0x6F] = Keys.F12,
+            [0x69] = Keys.F13,
+            [0x6B] = Keys.F14,
+            [0x71] = Keys.F15,
+            [0x6A] = Keys.F16,
+            [0x40] = Keys.F17,
+            [0x4F] = Keys.F18,
+            [0x50] = Keys.F19,
+            [0x5A] = Keys.F20,
+
+            // Numpad
+            [0x41] = Keys.Decimal,
+            [0x43] = Keys.Multiply,
+            [0x45] = Keys.Add,
+            [0x4E] = Keys.Subtract,
+            [0x4B] = Keys.Divide,
+            [0x52] = Keys.NumPad0,
+            [0x53] = Keys.NumPad1,
+            [0x54] = Keys.NumPad2,
+            [0x55] = Keys.NumPad3,
+            [0x56] = Keys.NumPad4,
+            [0x57] = Keys.NumPad5,
+            [0x58] = Keys.NumPad6,
+            [0x59] = Keys.NumPad7,
+            [0x5B] = Keys.NumPad8,
+            [0x5C] = Keys.NumPad9,
+        };
+        // End Fumen Modification
 
         static KeyboardUtil()
         {
@@ -161,6 +293,13 @@ namespace Microsoft.Xna.Framework.Input
 
             return Keys.None;
         }
+
+        // Begin Fumen Modification
+        public static bool TryGetKeyFromNSEventKey(ushort nsEventKey, out Keys key)
+        {
+            return NSEventToKeys.TryGetValue(nsEventKey, out key);
+        }
+        // End Fumen Modification
     }
 }
 

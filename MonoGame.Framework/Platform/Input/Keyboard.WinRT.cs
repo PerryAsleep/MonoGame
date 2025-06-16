@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Microsoft.Xna.Framework.Input
 {
     public static partial class Keyboard
-    {   
+    {
         static KeyboardState _keyboardState;
         static KeyboardState _nextKeyboardState;
 
@@ -30,11 +30,27 @@ namespace Microsoft.Xna.Framework.Input
         {
             _nextKeyboardState.InternalClearKey(key);
         }
-                
+
         internal static void Clear()
         {
             _nextKeyboardState.InternalClearAllKeys();
         }
 
+        // Begin Fumen Modification
+        public static void PlatformKeyDown(Keys key)
+        {
+            SetKey(key);
+        }
+
+        public static void PlatformKeyUp(Keys key)
+        {
+            ClearKey(key);
+        }
+
+        public static void PlatformClearHeldKeys()
+        {
+            Clear();
+        }
+        // End Fumen Modification
     }
 }

@@ -22,7 +22,9 @@ namespace Microsoft.Xna.Framework
         }
 
         private readonly Game _game;
-        private readonly List<Keys> _keys;
+        // Begin Fumen Modification
+        // private readonly List<Keys> _keys;
+        // End Fumen Modification
 
         private int _isExiting;
         // Begin Fumen Modification
@@ -36,8 +38,10 @@ namespace Microsoft.Xna.Framework
             : base(game)
         {
             _game = game;
-            _keys = new List<Keys>();
-            Keyboard.SetKeys(_keys);
+            // Begin Fumen Modification
+            // _keys = new List<Keys>();
+            // Keyboard.SetKeys(_keys);
+            // End Fumen Modification
 
             Sdl.GetVersion(out Sdl.version);
 
@@ -164,8 +168,10 @@ namespace Microsoft.Xna.Framework
                     case Sdl.EventType.KeyDown:
                     {
                         var key = KeyboardUtil.ToXna(ev.Key.Keysym.Sym);
-                        if (!_keys.Contains(key))
-                            _keys.Add(key);
+                        // Begin Fumen Modification
+                        //Debug.WriteLine($"SDL Key Down: {key}");
+                            Keyboard.KeyDown(key);
+                        // End Fumen Modification
                         char character = (char)ev.Key.Keysym.Sym;
                         _view.OnKeyDown(new InputKeyEventArgs(key));
                         if (char.IsControl(character))
@@ -175,7 +181,10 @@ namespace Microsoft.Xna.Framework
                     case Sdl.EventType.KeyUp:
                     {
                         var key = KeyboardUtil.ToXna(ev.Key.Keysym.Sym);
-                        _keys.Remove(key);
+                        // Begin Fumen Modification
+                        //Debug.WriteLine($"SDL Key Up: {key}");
+                        Keyboard.KeyUp(key);
+                        // End Fumen Modification
                         _view.OnKeyUp(new InputKeyEventArgs(key));
                         break;
                     }
