@@ -2,12 +2,13 @@
 // This file is subject to the terms and conditions defined in
 // file 'LICENSE.txt', which is part of this source code package.
 
+using Microsoft.Xna.Framework.Input.Touch;
+using MonoGame.Framework;
 using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.Xna.Framework.Input.Touch;
-using MonoGame.Framework;
 
 
 namespace Microsoft.Xna.Framework.Windows
@@ -54,6 +55,7 @@ namespace Microsoft.Xna.Framework.Windows
 
         public bool AllowAltF4 = true;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal bool IsResizing { get; set; }
 
         #region Events
