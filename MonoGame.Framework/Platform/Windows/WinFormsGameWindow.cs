@@ -176,6 +176,8 @@ namespace MonoGame.Framework
             Form.KeyPress += OnKeyPress;
 
             // Begin Fumen Modification
+            Form.DragEnter += DragEnter;
+            Form.DragDrop += DragDrop;
             Form.FormClosing += OnFormClosing;
             // End Fumen Modification
 
@@ -253,9 +255,7 @@ namespace MonoGame.Framework
 
             // Begin Fumen Modification
             //DragAcceptFiles(Handle, true); //allows drag and dropping
-            Form.DragEnter += DragEnter;
-            Form.DragDrop += DragDrop;
-            // Begin Fumen Modification
+            // End Fumen Modification
         }
 
         private void OnDeactivate(object sender, EventArgs eventArgs)
@@ -548,6 +548,15 @@ namespace MonoGame.Framework
 
         internal void UpdateWindows()
         {
+            // Begin Fumen Modification
+            // https://github.com/PerryAsleep/GrooveAuthor/issues/79
+            // Windows can prevent our window from entering the foreground if for example a user is actively
+            // typing in another window when our app launches. IsActive can be stuck in when it shouldn't be
+            // in this scenario, causing the app to accept inputs when it shouldn't. Users report this happening
+            // occaisonally outside of app launch, so every frame check for updating the active flag.
+            UpdateActiveFlagBasedOnWindowForegroundState();
+            // End Fumen Modification
+
             _allWindowsReaderWriterLockSlim.EnterReadLock();
 
             try
@@ -786,6 +795,19 @@ namespace MonoGame.Framework
             var hMonitor = MonitorFromWindow(Form.Handle, MONITOR_DEFAULTTONEAREST);
             GetDpiForMonitor(hMonitor, 0, out var dpiX, out _);
             return dpiX / 96.0;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        private void UpdateActiveFlagBasedOnWindowForegroundState()
+        {
+            var isForeground = Form != null && !Form.IsDisposed && GetForegroundWindow() == Form.Handle;
+            if (_platform.IsActive != isForeground)
+            {
+                _platform.IsActive = isForeground;
+                Keyboard.SetActive(_platform.IsActive);
+            }
         }
         // End Fumen Modification
     }
